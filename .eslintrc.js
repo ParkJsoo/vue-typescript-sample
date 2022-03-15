@@ -37,5 +37,6 @@ module.exports = {
     '@typescript-eslint/explicit-member-accessibility': 'off',
     '@typescript-eslint/array-type': ['off', {'default': 'array-simple', 'readonly': 'array-simple'}],
     'comma-dangle': ['off', {'arrays': 'always-multiline', 'objects': 'always-multiline', 'imports': 'always-multiline', 'exports': 'always-multiline', 'functions': 'never'}],
+    '@typescript-eslint/explicit-module-boundary-types': 'off'
   }
 };
