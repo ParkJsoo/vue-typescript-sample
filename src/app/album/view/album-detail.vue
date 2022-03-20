@@ -14,19 +14,22 @@
 
 <script lang="ts">
 import {Component, Vue, Watch} from 'vue-property-decorator';
-import {Album}                 from '../model/album.model';
+
+import {Album}      from '@/app/album/model/album.model';
+import {albumStore} from '@/app/album/vuex/album.store';
 
 @Component
 export default class AlbumDetail extends Vue {
   detail: Album.Response.FindOne = new Album.Response.FindOne();
+  store = albumStore;
 
   created() {
-    this.$store.dispatch('albumStore/getAlbum', this.$route.params.id);
+    this.store.getAlbum(this.$route.params.id);
   }
 
-  @Watch('$store.state.albumStore.album')
+  @Watch('store.album')
   getAlbum() {
-    this.detail = this.$store.getters['albumStore/getAlbum'];
+    this.detail = this.store.getStateAlbum;
   }
 }
 </script>

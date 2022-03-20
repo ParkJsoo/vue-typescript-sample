@@ -1,54 +1,53 @@
-import {ActionTree, GetterTree, Module, MutationTree} from 'vuex';
-import axios, {AxiosResponse}                         from 'axios';
+import {Action, Module, Mutation, VuexModule} from 'vuex-class-modules';
+import axios, {AxiosResponse}                 from 'axios';
 
-import AlbumState from '@/app/album/vuex/album.state';
-import {Album}    from '@/app/album/model/album.model';
+import {store} from '@/store';
+import {Album} from '@/app/album/model/album.model';
 
-const getters: GetterTree<AlbumState, any> = {
-  getAlbums(state: AlbumState) {
-    return Object.assign([], state.albums);
-  },
-  getAlbum(state: AlbumState) {
-    return Object.assign(Album.Response.FindOne, state.album);
+@Module
+export class AlbumStore extends VuexModule {
+  albums: Album.Response.FindAll[] = [];
+  album: Album.Response.FindOne = new Album.Response.FindOne();
+
+  get getStateAlbums() {
+    return Object.assign([], this.albums);
   }
-};
 
-const mutations: MutationTree<AlbumState> = {
-  setAlbums(state: AlbumState, albums: Album.Response.FindAll[]) {
-    state.albums = albums;
-  },
-  setAlbum(state: AlbumState, album: Album.Response.FindOne) {
-    state.album = album;
+  get getStateAlbum() {
+    return Object.assign(Album.Response.FindOne, this.album);
   }
-};
 
-const actions: ActionTree<AlbumState, any> = {
-  getAlbums({commit}) {
+  @Mutation
+  setAlbums(albums: Album.Response.FindAll[]) {
+    this.albums = albums;
+  }
+
+  @Mutation
+  setAlbum(album: Album.Response.FindOne) {
+    this.album = album;
+  }
+
+  @Action
+  getAlbums() {
     axios.get('https://jsonplaceholder.typicode.com/albums')
       .then((response: AxiosResponse<Album.Response.FindAll[]>) => {
-        commit('setAlbums', response.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  },
-  getAlbum({commit}, id: number) {
-    axios.get(`https://jsonplaceholder.typicode.com/albums/${id}`)
-      .then((response: AxiosResponse<Album.Response.FindOne>) => {
-        commit('setAlbum', response.data);
+        this.setAlbums(response.data);
       })
       .catch((error) => {
         console.log(error);
       });
   }
-};
 
-const albumStore: Module<AlbumState, any> = {
-  namespaced: true,
-  state     : new AlbumState(),
-  getters,
-  mutations,
-  actions
-};
+  @Action
+  getAlbum(id: string) {
+    axios.get(`https://jsonplaceholder.typicode.com/albums/${id}`)
+      .then((response: AxiosResponse<Album.Response.FindOne>) => {
+        this.setAlbum(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+}
 
-export default albumStore;
+export const albumStore = new AlbumStore({store, name: 'albumStore'});

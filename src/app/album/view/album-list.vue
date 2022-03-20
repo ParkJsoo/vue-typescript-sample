@@ -22,23 +22,25 @@
 <script lang="ts">
 import {Component, Vue, Watch} from 'vue-property-decorator';
 
-import {Album}    from '@/app/album/model/album.model';
+import {Album}      from '@/app/album/model/album.model';
+import {albumStore} from '@/app/album/vuex/album.store';
 
 @Component
 export default class AlbumList extends Vue {
   albums: Album.Response.FindAll[] = [];
+  store = albumStore;
 
   created() {
-    this.$store.dispatch('albumStore/getAlbums');
+    this.store.getAlbums();
   }
 
   onRow(id: number) {
     this.$router.push(`./album/${id}`);
   }
 
-  @Watch('$store.state.albumStore.albums')
-  getAlbums() {
-    this.albums = this.$store.getters['albumStore/getAlbums'];
+  @Watch('store.albums')
+  getStateAlbums() {
+    this.albums = this.store.getStateAlbums;
   }
 }
 </script>
