@@ -13,12 +13,12 @@ export default class About extends Vue {
   str = '';
 
   created() {
-    this.$store.dispatch('increment');
+    this.$store.dispatch('aboutStore/increment');
   }
 
-  @Watch('$store.state.count')
+  @Watch('$store.state.aboutStore.count')
   getCount() {
-    this.str = this.$store.getters.getCount;
+    this.str = this.$store.getters['aboutStore/getCount'];
   }
 }
 </script>
