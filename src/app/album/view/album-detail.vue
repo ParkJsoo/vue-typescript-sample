@@ -24,12 +24,12 @@ export default class AlbumDetail extends Vue {
   store = albumStore;
 
   created() {
-    this.store.getAlbum(this.$route.params.id);
+    this.store.actions.getOne(this.$route.params.id);
   }
 
-  @Watch('store.album')
+  @Watch('store.state.one')
   getAlbum() {
-    this.detail = this.store.getStateAlbum;
+    this.detail = this.store.getters.getOne();
   }
 }
 </script>

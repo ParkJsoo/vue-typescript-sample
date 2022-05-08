@@ -9,7 +9,7 @@
       </tr>
       </thead>
       <tbody>
-      <tr v-for="item in albums" v-bind:key="item.id" @click="onRow(item.id)">
+      <tr v-for="item in list" v-bind:key="item.id" @click="onRow(item.id)">
         <td>{{ item.userId }}</td>
         <td>{{ item.id }}</td>
         <td>{{ item.title }}</td>
@@ -27,20 +27,20 @@ import {albumStore} from '@/app/album/vuex/album.store';
 
 @Component
 export default class AlbumList extends Vue {
-  albums: Album.Response.FindAll[] = [];
+  list: Album.Response.FindAll[] = [];
   store = albumStore;
 
   created() {
-    this.store.getAlbums();
+    this.store.actions.getList();
   }
 
   onRow(id: number) {
     this.$router.push(`./album/${id}`);
   }
 
-  @Watch('store.albums')
+  @Watch('store.state.list')
   getStateAlbums() {
-    this.albums = this.store.getStateAlbums;
+    this.list = this.store.getters.getList();
   }
 }
 </script>
